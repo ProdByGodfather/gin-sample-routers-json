@@ -2,7 +2,7 @@
 
 Some simple router examples and practical examples with the gin framework and the go programming language.
 
-this router send you a json data. [To see routers html](https://prodbygodfather/gin-sample-routers-html)
+this router send you a json data. [To see routers html](https://github.com/prodbygodfather/gin-sample-routers-html)
 
 ### Examples of routers:
 - router.GET("/posts")
