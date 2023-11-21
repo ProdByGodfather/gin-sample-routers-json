@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -23,6 +24,10 @@ func main() {
 
 	router.GET("posts", getAllPosts)
 	router.GET("posts/:id", getPostByID)
+	router.POST("posts", createPost)
+	router.PATCH("posts/:id", updatePost)
+	router.DELETE("posts/:id", deletePost)
+
 	err := router.Run("localhost:8080")
 	if err != nil {
 		log.Fatal(err)
@@ -49,4 +54,49 @@ func getPostByID(c *gin.Context) {
 		}
 	}
 	c.IndentedJSON(http.StatusOK, posts[index])
+}
+func createPost(c *gin.Context) {
+	var newPost post
+	err := c.BindJSON(&newPost)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+	posts = append(posts, newPost)
+	c.IndentedJSON(http.StatusCreated, posts)
+}
+
+func updatePost(c *gin.Context) {
+	var index int
+	var update post
+	err := c.BindJSON(&update)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+	id := c.Param("id")
+	for k, v := range posts {
+		if id == v.ID {
+			index = k
+		}
+	}
+
+	title := update.Title
+	body := update.Body
+	// update item
+	posts[index].Title = title
+	posts[index].Body = body
+	c.IndentedJSON(http.StatusOK, posts[index])
+}
+func deletePost(c *gin.Context) {
+	var index int
+	id := c.Param("id")
+	for k, v := range posts {
+		if id == v.ID {
+			index = k
+		}
+	}
+	// delete item from slice
+	posts = append(posts[:index], posts[index+1:]...)
+	c.IndentedJSON(http.StatusOK, posts)
 }
